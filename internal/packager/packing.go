@@ -16,7 +16,7 @@ import (
 
 const (
 	// DefaultCNABBaseImageName is the name of the default base invocation image.
-	DefaultCNABBaseImageName = "docker/cnab-app-base"
+	DefaultCNABBaseImageName = "foundries/cnab-app-base"
 
 	dockerIgnore = "Dockerfile"
 )
