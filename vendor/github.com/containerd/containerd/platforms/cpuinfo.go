@@ -74,6 +74,12 @@ func getCPUInfo(pattern string) (info string, err error) {
 }
 
 func getCPUVariant() string {
+	variant := os.Getenv("GOARCH_VARIANT")
+	if len(variant) > 0 {
+		log.L.Debugf("Overriding CPU Variant as: %s", variant)
+		return variant
+	}
+
 	if runtime.GOOS == "windows" {
 		// Windows only supports v7 for ARM32 and v8 for ARM64 and so we can use
 		// runtime.GOARCH to determine the variants
