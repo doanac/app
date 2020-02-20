@@ -170,6 +170,15 @@ func ConfigureDefaultRegistries(ropts ...RegistryOpt) RegistryHosts {
 			}
 		}
 
+		transport, ok := config.Client.Transport.(*http.Transport)
+		if ok {
+			if transport.TLSClientConfig != nil {
+				if err := loadCAs(host, transport.TLSClientConfig) ; err != nil {
+					return nil, err
+				}
+			}
+		}
+
 		if opts.host != nil {
 			var err error
 			config.Host, err = opts.host(config.Host)

@@ -11,6 +11,7 @@ import (
 	"github.com/docker/cli/cli/config/configfile"
 	"github.com/docker/distribution/reference"
 	"github.com/docker/docker/registry"
+	"github.com/docker/go-connections/tlsconfig"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 )
 
@@ -88,6 +89,12 @@ func CreateResolver(cfg *configfile.ConfigFile, plainHTTPRegistries ...string) r
 		},
 	}
 
+	clientTLS := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsconfig.ServerDefault(),
+		},
+	}
+
 	skipTLSAuthorizer := docker.NewAuthorizer(clientSkipTLS, func(hostName string) (string, string, error) {
 		if hostName == registry.DefaultV2Registry.Host {
 			hostName = registry.IndexServer
@@ -110,6 +117,7 @@ func CreateResolver(cfg *configfile.ConfigFile, plainHTTPRegistries ...string) r
 		secure: docker.NewResolver(docker.ResolverOptions{
 			Authorizer: authorizer,
 			PlainHTTP:  false,
+			Client: clientTLS,
 		}),
 		skipTLS: docker.NewResolver(docker.ResolverOptions{
 			Authorizer: skipTLSAuthorizer,
